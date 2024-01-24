@@ -1,47 +1,30 @@
 import express from 'express';
-import * as config from '../config';
 import cors from 'cors';
-import * as tools from '../tools';
-import axios from 'axios';
 
-interface IEmpHireItem {
-	fullName: string;
-	hireDate: string;
+interface IEmployee {
+	first_name: string;
+	last_name: string;
+	age: number;
 }
 
 const app = express();
 app.use(cors());
 const port = 4882;
 
-app.get('/', (_req, res) => {
-	res.status(203);
-	res.json({
-		appName: config.getAppName()
-	});
-});
-
-app.get('/node-version', (_, res) => {
-	res.json(process.version);
-});
-
-app.get('/number-of-files', (_, res) => {
-	const files = tools.getAllFilesInDirectory(process.cwd());
-	res.json(files.length);
-});
-
-app.get('/employee-hire-dates', (req, res) => {
-	(async () => {
-		const response = await axios.get('https://edwardtanguay.vercel.app/share/employees.json');
-		const empHireItems: IEmpHireItem[] = [];
-		const employees = response.data;
-		for (const employee of employees) {
-			empHireItems.push({
-				fullName: `${employee.firstName} ${employee.lastName}`,
-				hireDate: employee.hireDate.substring(0, 10)
-			});
+app.get('/employees', (_req, res) => {
+	const employees:IEmployee[] = [
+		{
+			first_name: 'first1',
+			last_name: 'last1',
+			age: 11
+		},
+		{
+			first_name: 'first2',
+			last_name: 'last2',
+			age: 22
 		}
-		res.json(empHireItems);
-	})();
+	]
+	res.json(employees);
 });
 
 app.listen(port, () => {
